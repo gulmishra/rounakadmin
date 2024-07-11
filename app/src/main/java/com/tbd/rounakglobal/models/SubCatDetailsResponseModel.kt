@@ -31,6 +31,9 @@ class SubCatDetailsDataModel{
     @Expose
     @SerializedName("cat_name")
     var cat_name: String ?= null
+    @Expose
+    @SerializedName("type")
+    var type: String ?= null
 
 
 }

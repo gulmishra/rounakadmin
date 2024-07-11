@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -33,6 +34,8 @@ import com.tbd.rounakglobal.interfaces.APIService
 import com.tbd.rounakglobal.models.CatRespDataModel
 import com.tbd.rounakglobal.models.CatRespModel
 import com.tbd.rounakglobal.models.CommonResponseModel
+import com.tbd.rounakglobal.models.NewsDetailsResponseModel
+import com.tbd.rounakglobal.models.SubCatDetailsResponseModel
 import com.tbd.rounakglobal.utils.compressVideo
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -81,10 +84,12 @@ class ActEditNews : AppCompatActivity() {
     var tv_Image : TextView?= null
     var llImages : LinearLayout?= null
     var tvVideo : TextView?= null
-
+    var tvTitle : TextView?= null
+    lateinit var id: String
     var loader : KProgressHUD?= null
     var cat_id : String?= ""
     var sub_cat_id : String?= ""
+    var sub_cat_name : String?= ""
     lateinit var login: LoginSession
     var CatSearchList: ArrayList<String>? = null
     var CatDataList: ArrayList<CatRespDataModel>? = null
@@ -134,9 +139,10 @@ class ActEditNews : AppCompatActivity() {
         tv_Image =  findViewById(R.id.tv_Image)
         llImages =  findViewById(R.id.llImages)
         tvVideo =  findViewById(R.id.tvVideo)
+        tvTitle =  findViewById(R.id.tvTitle)
+        tvTitle?.text = "Edit News"
 
-
-
+        id = intent.getStringExtra("id")!!
         tvSubmit?.setOnClickListener(View.OnClickListener {
             if(cat_id.equals("0")){
                 Toast.makeText(this, "Please select category", Toast.LENGTH_SHORT).show()
@@ -154,7 +160,7 @@ class ActEditNews : AppCompatActivity() {
                 Toast.makeText(this, "Please select video.", Toast.LENGTH_SHORT).show()
             }else {
                 loader?.show()
-                addNews()
+                updateNews()
             }
         })
 
@@ -187,11 +193,7 @@ class ActEditNews : AppCompatActivity() {
         ivBack?.setOnClickListener(View.OnClickListener {
            finish()
         })
-        cbVideo!!.isChecked = true
-        tvVideo!!.visibility = View.VISIBLE
-        rlVideo!!.visibility = View.VISIBLE
-        tv_Image!!.visibility = View.GONE
-        llImages!!.visibility = View.GONE
+
 
         cbVideo!!.setOnCheckedChangeListener{ buttonView, isChecked ->
             if(isChecked){
@@ -341,7 +343,7 @@ class ActEditNews : AppCompatActivity() {
         }
     }
 
-    fun addNews() {
+    fun updateNews() {
 
         var mAPIService: APIService? = null
         mAPIService = ApiUtils.apiService
@@ -352,6 +354,7 @@ class ActEditNews : AppCompatActivity() {
             map.addProperty("desc", etDescr?.text.toString().trim())
             map.addProperty("cat_id", cat_id)
             map.addProperty("sub_cat_id", sub_cat_id)
+            map.addProperty("id", id)
 
             if(cbVideo!!.isChecked){
                 map.addProperty("videoName", videoName)
@@ -384,7 +387,7 @@ class ActEditNews : AppCompatActivity() {
 
 
           //  Log.w("BTAGG","Map "+map)
-            mAPIService.addNews(map)
+            mAPIService.updateNews(map)
                 .enqueue(object : Callback<CommonResponseModel> {
                     override fun onResponse(
                         call: Call<CommonResponseModel>,
@@ -476,7 +479,7 @@ class ActEditNews : AppCompatActivity() {
                                     override fun onNothingSelected(parent: AdapterView<*>?) {
                                     }
                                 })
-
+                                getNewsDetails()
                             }
                         }else{
                             cat_id = "0"
@@ -526,6 +529,9 @@ class ActEditNews : AppCompatActivity() {
                                 scsSubCat?.setAdapter(meterSrNumAdapter)
                                 scsSubCat?.setTitle("Select Sub Category")
                                 scsSubCat?.setPositiveButton("OK")
+                                if(!sub_cat_name.equals("")){
+                                    scsSubCat?.setSelection(SubCatSearchList!!.indexOf(sub_cat_name))
+                                }
                                 scsSubCat?.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
                                     override fun onItemSelected(
                                         parent: AdapterView<*>?,
@@ -539,7 +545,6 @@ class ActEditNews : AppCompatActivity() {
                                     override fun onNothingSelected(parent: AdapterView<*>?) {
                                     }
                                 })
-
                             }
                         }else{
                             sub_cat_id = "0"
@@ -604,4 +609,88 @@ class ActEditNews : AppCompatActivity() {
         return Base64.encodeToString(videoBytes, Base64.NO_WRAP)
     }
 
+    fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
+    fun getNewsDetails() {
+        var mAPIService: APIService? = null
+        mAPIService = ApiUtils.apiService
+        val map = JsonObject()
+        map.addProperty("id",id)
+        Log.w("BTAGG", "Map " + map)
+        mAPIService.getNewsDetails(map)
+            .enqueue(object : Callback<NewsDetailsResponseModel> {
+                override fun onResponse(
+                    call: Call<NewsDetailsResponseModel>,
+                    response: Response<NewsDetailsResponseModel>
+                ) {
+                    Log.w("BTAGG", "Map " + response)
+                    if (response.isSuccessful) {
+                        if (response.body()!!.success.equals("1")) {
+                            loader!!.dismiss()
+                            kotlin.run {
+                                Toast.makeText(
+                                    this@ActEditNews,
+                                    response.body()?.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                etTitle?.text = response.body()?.data!!.title!!.toEditable()
+                                etDescr?.text = response.body()?.data!!.description!!.toEditable()
+                                scsType?.setSelection(CatSearchList!!.indexOf(response.body()?.data!!.cat_name!!))
+                              //  scsSubCat?.setSelection(SubCatSearchList!!.indexOf(response.body()?.data!!.sub_cat_name!!))
+                                cat_id = response.body()?.data!!.cat_id!!
+                                sub_cat_id = response.body()?.data!!.sub_cat_id!!
+                                sub_cat_name = response.body()?.data!!.sub_cat_name!!
+                                getSubCatData()
+                                videoName = response.body()?.data!!.video!!
+                                imageNameOne = response.body()?.data!!.image_one!!
+                                imageNameTwo = response.body()?.data!!.image_two!!
+                                imageNameThree = response.body()?.data!!.image_three!!
+                                if(!videoName.equals("")){
+                                    cbVideo?.isChecked = true
+                                    Glide.with(this@ActEditNews).load(videoName).into(ivVideo!!)
+                                }else if (!imageNameOne.equals("") || !imageNameTwo.equals("") || !imageNameThree.equals("")){
+                                    cbImages?.isChecked = true
+                                    if(!imageNameOne.equals("")){
+                                        Glide.with(this@ActEditNews).load(imageNameOne).into(ivImageNewsOne!!)
+                                    }
+
+                                    if(!imageNameTwo.equals("")){
+                                        Glide.with(this@ActEditNews).load(imageNameTwo).into(ivImageNewsTwo!!)
+                                    }
+
+                                    if(!imageNameThree.equals("")){
+                                        Glide.with(this@ActEditNews).load(imageNameThree).into(ivImageNewsThree!!)
+                                    }else{
+
+                                    }
+
+
+
+                                }else if (videoName.equals("") && imageNameOne.equals("") && imageNameTwo.equals("") && imageNameThree.equals("")){
+                                    cbNoMedia?.isChecked = true
+                                }else{
+                                    cbNoMedia?.isChecked = true
+                                }
+
+                               // Glide.with(this@ActEditNews).load(imageName).into(ivImageCat!!)
+                            }
+                        } else {
+                            loader!!.dismiss()
+                            Toast.makeText(
+                                this@ActEditNews,
+                                response.body()!!.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+
+                }
+
+                override fun onFailure(call: Call<NewsDetailsResponseModel>, t: Throwable) {
+                    loader!!.dismiss()
+                    Log.w("BTAGG", "post registration to API f " + t.message.toString())
+                }
+            })
+
+    }
 }

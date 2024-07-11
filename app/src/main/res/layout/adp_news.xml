@@ -20,7 +20,7 @@
             android:layout_marginRight="5dp"
             android:orientation="horizontal">
             <TextView
-                android:textSize="18dp"
+                android:textSize="16dp"
                 android:textColor="@color/black"
                 android:text="Title"
                 android:id="@+id/tvTiltle"
@@ -34,7 +34,7 @@
                 android:textColor="@color/colorMoreOffWhite"
                 android:text="24 June 2024 04 : 51 PM"
                 android:id="@+id/tvDate"
-                android:layout_width="180dp"
+                android:layout_width="145dp"
                 android:gravity="end"
                 android:layout_height="wrap_content"/>
             <ImageView

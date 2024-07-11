@@ -101,7 +101,7 @@ class ActEditCat :AppCompatActivity() {
         ivBack?.setOnClickListener(View.OnClickListener {
             finish()
         })
-
+        loader?.show()
         getCatDetails()
     }
     private fun openGalleryForImage() {

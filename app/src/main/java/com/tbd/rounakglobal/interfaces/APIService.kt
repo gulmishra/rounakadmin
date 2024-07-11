@@ -44,8 +44,16 @@ interface APIService {
     fun addSubCat(@Body params: JsonObject): Call<CommonResponseModel>
 
     @Headers("Authorization:  Basic ZXpzb2Z0Ukc6ZXokMTIzUkc=;")
+    @POST("AdminApp/updateSubCat")
+    fun updateSubCat(@Body params: JsonObject): Call<CommonResponseModel>
+
+    @Headers("Authorization:  Basic ZXpzb2Z0Ukc6ZXokMTIzUkc=;")
     @POST("AdminApp/uploadVideo")
     fun addNews(@Body params: JsonObject): Call<CommonResponseModel>
+
+    @Headers("Authorization:  Basic ZXpzb2Z0Ukc6ZXokMTIzUkc=;")
+    @POST("AdminApp/updateNews")
+    fun updateNews(@Body params: JsonObject): Call<CommonResponseModel>
 
     @Headers("Authorization:  Basic ZXpzb2Z0Ukc6ZXokMTIzUkc=;")
     @POST("AdminApp/deleteCat")

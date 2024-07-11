@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -17,15 +18,18 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.tbd.rounakglobal.R
 import com.tbd.rounakglobal.controllers.ApiUtils
 import com.tbd.rounakglobal.controllers.LoginSession
 import com.tbd.rounakglobal.interfaces.APIService
+import com.tbd.rounakglobal.models.CatDetailsResponseModel
 import com.tbd.rounakglobal.models.CatRespDataModel
 import com.tbd.rounakglobal.models.CatRespModel
 import com.tbd.rounakglobal.models.CommonResponseModel
+import com.tbd.rounakglobal.models.SubCatDetailsResponseModel
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,10 +40,12 @@ class ActEditSubCat : AppCompatActivity() {
     val REQUEST_CODE = 100
     lateinit var imageString: String
     lateinit var cat_id: String
+    lateinit var id: String
     lateinit var imageName: String
     var ivImageCat : ImageView?= null
     var ivBack : ImageView?= null
     var tvSubmit : TextView?= null
+    var tvTitle : TextView?= null
     var etTitle : EditText?= null
     var rlImage : RelativeLayout?= null
     var scsType : SearchableSpinner?= null
@@ -76,6 +82,9 @@ class ActEditSubCat : AppCompatActivity() {
         rlImage =  findViewById(R.id.rlImage)
         ivImageCat =  findViewById(R.id.ivImageCat)
         ivBack =  findViewById(R.id.ivBack)
+        tvTitle =  findViewById(R.id.tvTitle)
+        tvTitle?.text = "Edit Sub Category"
+        id = intent.getStringExtra("id")!!
         val meterSrNumAdapter: ArrayAdapter<*> =
             ArrayAdapter<String>(this@ActEditSubCat, R.layout.search_layout, countrySearchList!!)
         scsType?.setAdapter(meterSrNumAdapter)
@@ -105,7 +114,7 @@ class ActEditSubCat : AppCompatActivity() {
                 Toast.makeText(this, "Please select image", Toast.LENGTH_SHORT).show()
             }else {
                 loader?.show()
-                addCat()
+                updateSubCat()
             }
         })
         ivBack?.setOnClickListener(View.OnClickListener {
@@ -115,6 +124,8 @@ class ActEditSubCat : AppCompatActivity() {
         rlImage?.setOnClickListener(View.OnClickListener {
             openGalleryForImage()
         })
+
+
     }
     private fun openGalleryForImage() {
         val intent = Intent(Intent.ACTION_PICK)
@@ -139,16 +150,17 @@ class ActEditSubCat : AppCompatActivity() {
 //            Log.w("BTAG","Image "+imageName)
         }
     }
-    fun addCat() {
+    fun updateSubCat() {
         var mAPIService: APIService? = null
         mAPIService = ApiUtils.apiService
         val map = JsonObject()
         map.addProperty("title", etTitle?.text.toString().trim())
         map.addProperty("cat_id",cat_id)
+        map.addProperty("id",id)
         map.addProperty("img_name", imageName)
         map.addProperty("img", imageString)
         Log.w("BTAGG", "Map " + map)
-        mAPIService.addSubCat(map)
+        mAPIService.updateSubCat(map)
             .enqueue(object : Callback<CommonResponseModel> {
                 override fun onResponse(
                     call: Call<CommonResponseModel>,
@@ -229,7 +241,8 @@ class ActEditSubCat : AppCompatActivity() {
                                     override fun onNothingSelected(parent: AdapterView<*>?) {
                                     }
                                 })
-
+                                loader?.show()
+                                getSubCatDetails()
                             }
                         }else{
                             loader!!.dismiss()
@@ -247,5 +260,56 @@ class ActEditSubCat : AppCompatActivity() {
                     Log.w("BTAGG", "post registration to API f " + t.message.toString())
                 }
             })
+    }
+
+    fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
+    fun getSubCatDetails() {
+        var mAPIService: APIService? = null
+        mAPIService = ApiUtils.apiService
+        val map = JsonObject()
+        map.addProperty("id",id)
+        Log.w("BTAGG", "Map " + map)
+        mAPIService.getSubCatDetails(map)
+            .enqueue(object : Callback<SubCatDetailsResponseModel> {
+                override fun onResponse(
+                    call: Call<SubCatDetailsResponseModel>,
+                    response: Response<SubCatDetailsResponseModel>
+                ) {
+                    Log.w("BTAGG", "Map " + response)
+                    if (response.isSuccessful) {
+                        if (response.body()!!.success.equals("1")) {
+                            loader!!.dismiss()
+                            kotlin.run {
+                                Toast.makeText(
+                                    this@ActEditSubCat,
+                                    response.body()?.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                etTitle?.text = response.body()?.data!!.title!!.toEditable()
+                                scsType?.setSelection(countrySearchList!!.indexOf(response.body()?.data!!.type!!))
+                                scsCategory?.setSelection(CatSearchList!!.indexOf(response.body()?.data!!.cat_name!!))
+                                cat_id = CatDataList!!.get(scsCategory?.selectedItemPosition!!).id!!
+                                imageName = response.body()?.data!!.image!!
+                                Glide.with(this@ActEditSubCat).load(imageName).into(ivImageCat!!)
+                            }
+                        } else {
+                            loader!!.dismiss()
+                            Toast.makeText(
+                                this@ActEditSubCat,
+                                response.body()!!.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+
+                }
+
+                override fun onFailure(call: Call<SubCatDetailsResponseModel>, t: Throwable) {
+                    loader!!.dismiss()
+                    Log.w("BTAGG", "post registration to API f " + t.message.toString())
+                }
+            })
+
     }
 }
