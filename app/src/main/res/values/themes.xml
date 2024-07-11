@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <style name="Theme.RounakGlobal" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/white_trans</item>
+        <item name="colorPrimaryVariant">@color/white_trans</item>
+        <item name="colorOnPrimary">@color/white_trans</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/logo_blue</item>
+        <item name="colorSecondaryVariant">@color/logo_name</item>
+        <item name="colorOnSecondary">@color/logo_name</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="drawerArrowStyle">@style/DrawerIconStyle</item>
+
+        <!-- Customize your theme here. -->
+    </style>
+    <style name="WhiteAccent">
+        <item name="colorAccent">@color/logo_name</item> <!-- Whatever color you want-->
+    </style>
+
+    <style name="DrawerIconStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@android:color/white</item>
+    </style>
+    <style name="AppSearchView" parent="Widget.AppCompat.SearchView" >
+        <item name="android:textSize">13dp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="customRatingBar"
+        parent="android:style/Widget.Material.RatingBar.Small">
+        <item name="colorControlNormal">@color/colorOffWhite</item>
+        <item name="colorControlActivated">@color/logo_blue</item>
+        <item name="android:numStars">5</item>
+    </style>
+</resources>

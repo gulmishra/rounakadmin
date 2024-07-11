@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".activities.ActLogin">
+
+   <ImageView
+       android:background="#fff"
+       android:layout_marginTop="70dp"
+       android:layout_marginBottom="40dp"
+       android:layout_gravity="center_horizontal"
+       android:src="@drawable/ic_rounak_global"
+       android:layout_width="150dp"
+       android:layout_height="150dp"/>
+   <TextView
+       android:id="@+id/tv_email"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="25dp"
+       android:layout_marginTop="15dp"
+       android:layout_marginRight="25dp"
+       android:layout_marginBottom="5dp"
+       android:paddingLeft="2dp"
+       android:paddingTop="5dp"
+       android:text="Email"
+       android:textStyle="bold"
+       android:textColor="@color/black"
+       android:textSize="14sp" />
+   <EditText
+       android:id="@+id/etEmail"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="25dp"
+       android:layout_marginTop="5dp"
+       android:layout_marginRight="25dp"
+       android:layout_marginBottom="5dp"
+       android:inputType="textEmailAddress"
+       android:maxLength="80"
+       android:paddingTop="5dp"
+       android:textColor="@color/logo_name"
+       android:textSize="14sp" />
+   <TextView
+       android:visibility="visible"
+       android:id="@+id/tv_reg_pass"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="25dp"
+       android:layout_marginTop="10dp"
+       android:layout_marginRight="25dp"
+       android:layout_marginBottom="5dp"
+       android:paddingLeft="2dp"
+       android:paddingTop="5dp"
+       android:text="Password"
+       android:textStyle="bold"
+       android:textColor="@color/black"
+       android:textSize="14sp"/>
+   <com.google.android.material.textfield.TextInputLayout
+       android:visibility="visible"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="25dp"
+       app:boxStrokeColor="@color/black"
+       android:layout_marginTop="5dp"
+       android:layout_marginRight="25dp"
+       android:layout_marginBottom="5dp"
+       app:passwordToggleEnabled="true">
+      <EditText
+          android:id="@+id/etpassword"
+          android:layout_width="match_parent"
+          android:layout_height="30dp"
+          android:layout_below="@+id/tv_reg_phone"
+          android:inputType="textWebPassword"
+          android:paddingTop="5dp"
+          android:backgroundTint="@color/white"
+          android:paddingStart="0dp"
+          android:textColor="@color/logo_name"
+          android:textSize="12sp" />
+   </com.google.android.material.textfield.TextInputLayout>
+   <TextView
+       android:id="@+id/tvLogin"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_below="@+id/ev_eneter_ccs"
+       android:background="@drawable/btn_blue"
+       android:gravity="center"
+       android:layout_marginStart="20sp"
+       android:layout_marginEnd="20sp"
+       android:layout_marginTop="16dp"
+       android:text="Login"
+       android:textAllCaps="true"
+       android:textColor="@color/white"
+       android:textSize="14sp" />
+
+
+
+
+
+</LinearLayout>

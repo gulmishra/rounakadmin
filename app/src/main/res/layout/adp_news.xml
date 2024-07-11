@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_margin="5dp"
+    android:elevation="5dp"
+    android:background="@color/white"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:orientation="horizontal">
+            <TextView
+                android:textSize="18dp"
+                android:textColor="@color/black"
+                android:text="Title"
+                android:id="@+id/tvTiltle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:paddingLeft="10dp"
+                android:layout_gravity="center_vertical"
+                android:textSize="12dp"
+                android:textColor="@color/colorMoreOffWhite"
+                android:text="24 June 2024 04 : 51 PM"
+                android:id="@+id/tvDate"
+                android:layout_width="180dp"
+                android:gravity="end"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/ivEdit"
+                android:src="@drawable/ic_pencil"
+                android:tint="@color/logo_blue"
+                android:layout_marginLeft="5dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"/>
+            <ImageView
+                android:id="@+id/ivDelete"
+                android:src="@drawable/ic_delete"
+                android:layout_marginLeft="5dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            android:text="Description"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <FrameLayout
+            android:id="@+id/flVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/exoPlayerView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="center" />
+        </FrameLayout>
+
+        <com.smarteist.autoimageslider.SliderView
+            android:visibility="gone"
+            android:id="@+id/imageSlider"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:sliderAutoCycleEnabled="false"
+            app:sliderIndicatorGravity="center_horizontal|bottom"
+            app:sliderIndicatorMargin="15dp"
+            app:sliderIndicatorOrientation="horizontal"
+            app:sliderIndicatorPadding="3dp"
+            app:sliderIndicatorRadius="2dp"
+            app:sliderIndicatorSelectedColor="#5A5A5A"
+            app:sliderIndicatorUnselectedColor="#FFF"
+            app:sliderStartAutoCycle="false" />
+
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>
